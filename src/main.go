@@ -1,37 +1,49 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"time"
+)
+
+type Interval struct {
+	FechaInicio time.Time `json:"fecha_inicio"`
+	FechaFin    time.Time `json:"fecha_fin"`
+} 
+
+func generarIntervalosMensuales(fechaInicial, fechaFinal time.Time) ([]Interval, error) {
+	var intervalos []Interval
+
+	for fechaInicial.Before(fechaFinal) || fechaInicial.Equal(fechaFinal) {
+		fechaFinalDelMes := time.Date(fechaInicial.Year(), fechaInicial.Month()+1, 1, 0, 0, 0, 0, time.UTC).Add(-time.Second)
+		if fechaFinalDelMes.After(fechaFinal) {
+			fechaFinalDelMes = fechaFinal
+		}
+
+		intervalo := Interval{
+			FechaInicio: fechaInicial,
+			FechaFin:    fechaFinalDelMes,
+		}
+
+		intervalos = append(intervalos, intervalo)
+
+		fechaInicial = fechaFinalDelMes.Add(time.Second)
+	}
+
+	return intervalos, nil
+}
 
 func main() {
+	fechaInicial, _ := time.Parse("2006-01-02", "2023-01-15")
+	fechaFinal, _ := time.Parse("2006-01-02", "2023-05-20")
 
-	const pi float64 = 3.14159265
+	intervalos, err := generarIntervalosMensuales(fechaInicial, fechaFinal)
+	if err != nil {
+		fmt.Println("Error:", err)
+		return
+	}
 
-	const pi2= 3.14159265
-
-	fmt.Printf("%.6f \n", pi)
-	fmt.Printf("%.4f \n", pi2)
-
-	fmt.Println("Hello World")
-
-
-	base := 12
-	var altura int = 14
-	var area int
-
-	fmt.Println(base, altura, area)
-
-	// Zero values
-	var a int
-	var b float64
-	var c string
-	var d bool
-
-	fmt.Println(a, b, c, d)
-
-	// Area cuadrado
-	const baseCuadrado = 10
-
-	areaCuadrado := baseCuadrado * baseCuadrado
-
-	fmt.Println("Area cuadrado:", areaCuadrado)
+	// Imprime cada intervalo
+	for _, intervalo := range intervalos {
+		fmt.Printf("FechaInicio: %s, FechaFin: %s\n", intervalo.FechaInicio.Format("2006-01-02"), intervalo.FechaFin.Format("2006-01-02"))
+	}
 }
