@@ -2,7 +2,7 @@ package main
 
 import "fmt"
 
-func main() {
+func main2() {
 	// array
 
 	var array [4]int
