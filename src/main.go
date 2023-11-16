@@ -1,51 +1,23 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+)
 
-type figuras2D interface {
-	area() float64
-}
+// c chan <- // Dato de entrada
+// c <- chan // dato de salida
 
-type cuadrado struct {
-	base float64
-}
-
-type rectangulo struct {
-	base   float64
-	altura float64
-}
-
-func (c cuadrado) area() float64 {
-	return c.base * c.base
-}
-
-func (r rectangulo) area() float64 {
-	return r.base * r.altura
-}
-
-func calculate(f figuras2D) float64 {
-	fmt.Println("Area", f.area())
-
-	return f.area()
+func say(text string, c chan <- string) {
+	c <- text
 }
 
 func main() {
-	myCuadrado := cuadrado{base: 12}
 
-	myRectangulo := rectangulo{base: 2, altura: 3}
+	c := make(chan string, 1)
 
-	areaCuadrado := calculate(myCuadrado)
+	fmt.Println("Hello")
 
-	calculate(myRectangulo)
+	go say("bye", c)
 
-	fmt.Println(areaCuadrado)
-
-	// Lista interface
-
-	// [1, "bo", true]
-
-	myInterface := []interface{}{"Hola", 12, 4.2}
-
-	fmt.Println(myInterface...)
-
+	fmt.Println(<- c)
 }
